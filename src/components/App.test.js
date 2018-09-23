@@ -6,7 +6,7 @@ import renderer from 'react-test-renderer';
 import Dropzone from 'react-dropzone'
 
 describe(App, () => {
-	const plainText='@you &%&% $%construct a f%ile...'
+	const plainText='@you i&%&% an $%construct a f%ile...'
 	const parts = [
 	  new Blob([plainText], {type: 'text/plain'})
 	];
@@ -76,14 +76,11 @@ describe(App, () => {
 		expect(componentWrapper.state().plainText).toEqual(plainText);
 	});
 
-	it('dictionary should populate correctly', async () => {
+	it('dictionary should populate correctly deleting black list words', async () => {
 	    const componentWrapper = shallow(<App />);
 	    const component = componentWrapper.instance();
 		await component.createDictionary(files)
-		let obj ={ y: { you: 1 },
-			      c: { construct: 1 },
-			      a: { a: 1 },
-			      f: { file: 1 }}
+		let obj ={"c": {"construct": 1}, "f": {"file": 1}}
 		expect(componentWrapper.state().dictionary).toEqual(obj);
 	});
 

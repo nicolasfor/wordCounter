@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from '../assets/logo.svg';
 import Dropzone from 'react-dropzone'
 import TreeView from 'react-treeview';
-import consolidated from '../config/consolidated'
+import blackList from '../config/blackList'
 import 'react-treeview/react-treeview.css'
 class App extends Component {
 
@@ -37,7 +37,7 @@ class App extends Component {
           word= word.replace(/[^\w\s]/gi, '').replace(/\r?\n|\r/)
           if(word)
           {
-            let validWord = consolidated.find((item,index)=>item==word);
+            let validWord = blackList.find((item,index)=>item==word);
             if(!validWord )
             {
               let firstLetter = word[0];
