@@ -1,0 +1,1769 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (Array.isArray(files) && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        console.log("plainText", plainText);
+        console.log("results", results);
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          if (word)
+          {
+            let validWord = _consolidated2.default.find((item, index) => item == word);
+            if (!validWord)
+            {
+              let firstLetter = word[0];
+              if (!dictionary[firstLetter])
+              dictionary[firstLetter] = {};
+              if (!dictionary[firstLetter][word])
+              dictionary[firstLetter][word] = 1;else
+
+              dictionary[firstLetter][word] += 1;
+            }
+          }
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        console.log("reader.result", reader.result);
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 104 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 108 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 109 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 110 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 111 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 114 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 115 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 116 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 117 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 120 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 121 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 126 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 130 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 135 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 144 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 145 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 146 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (Array.isArray(files) && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        console.log("plainText", plainText);
+        console.log("results", results);
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          if (word)
+          {
+            let validWord = _consolidated2.default.find((item, index) => item == word);
+            if (!validWord)
+            {
+              let firstLetter = word[0];
+              if (!dictionary[firstLetter])
+              dictionary[firstLetter] = {};
+              if (!dictionary[firstLetter][word])
+              dictionary[firstLetter][word] = 1;else
+
+              dictionary[firstLetter][word] += 1;
+            }
+          }
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 102 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 104 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 107 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 108 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 109 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 110 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 113 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 114 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 115 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 116 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 119 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 120 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 125 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 129 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 134 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 143 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 144 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 145 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (Array.isArray(files) && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          if (word)
+          {
+            let validWord = _consolidated2.default.find((item, index) => item == word);
+            if (!validWord)
+            {
+              let firstLetter = word[0];
+              if (!dictionary[firstLetter])
+              dictionary[firstLetter] = {};
+              if (!dictionary[firstLetter][word])
+              dictionary[firstLetter][word] = 1;else
+
+              dictionary[firstLetter][word] += 1;
+            }
+          }
+        });
+        //console.log("dictionary",dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 100 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 101 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 102 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 107 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 108 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 111 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 112 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 113 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 114 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 117 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 118 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 123 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 127 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 132 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 141 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 142 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 143 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (Array.isArray(files) && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          if (word)
+          {
+            let validWord = _consolidated2.default.find((item, index) => item == word);
+            if (!validWord)
+            {
+              let firstLetter = word[0];
+              if (!dictionary[firstLetter])
+              dictionary[firstLetter] = {};
+              if (!dictionary[firstLetter][word])
+              dictionary[firstLetter][word] = 1;else
+
+              dictionary[firstLetter][word] += 1;
+            }
+          }
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        console.log("reader.result", reader.result);
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 101 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 102 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 104 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 107 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 108 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 109 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 112 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 113 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 114 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 115 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 118 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 119 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 124 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 128 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 133 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 142 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 143 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 144 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (Array.isArray(files) && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          if (word)
+          {
+            let validWord = _consolidated2.default.find((item, index) => item == word);
+            if (!validWord)
+            {
+              let firstLetter = word[0];
+              if (!dictionary[firstLetter])
+              dictionary[firstLetter] = {};
+              if (!dictionary[firstLetter][word])
+              dictionary[firstLetter][word] = 1;else
+
+              dictionary[firstLetter][word] += 1;
+            }
+          }
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 100 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 101 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 102 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 107 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 108 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 111 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 112 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 113 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 114 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 117 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 118 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 123 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 127 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 132 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 141 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 142 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 143 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (Array.isArray(files) && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          let validWord = _consolidated2.default.find((item, index) => item == word);
+          if (!validWord)
+          {
+            let firstLetter = word[0];
+            if (!dictionary[firstLetter])
+            dictionary[firstLetter] = {};
+            if (!dictionary[firstLetter][word])
+            dictionary[firstLetter][word] = 1;else
+
+            dictionary[firstLetter][word] += 1;
+          }
+
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 98 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 99 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 100 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 101 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 104 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 109 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 110 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 111 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 112 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 115 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 116 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 121 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 125 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 130 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 139 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 140 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 141 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (files && files.isArray() && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          let validWord = _consolidated2.default.find((item, index) => item == word);
+          if (!validWord)
+          {
+            let firstLetter = word[0];
+            if (!dictionary[firstLetter])
+            dictionary[firstLetter] = {};
+            if (!dictionary[firstLetter][word])
+            dictionary[firstLetter][word] = 1;else
+
+            dictionary[firstLetter][word] += 1;
+          }
+
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 98 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 99 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 100 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 101 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 104 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 109 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 110 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 111 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 112 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 115 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 116 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 121 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 125 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 130 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 139 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 140 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 141 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`class App extends _react.Component {
+
+  constructor(state)
+  {
+    super(state);
+    this.state = { files: null, dictionary: null, plainText: null, toCollapse: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+  }
+  onDrop(files) {
+    this.createDictionary(files);
+  }
+  async createDictionary(files)
+  {
+    //console.log("files",files);
+    var dictionary = {};
+    let promises = [];
+    if (files && files.length && files.length > 0)
+    files.forEach((item, index) => {
+      //console.log("about to call");
+      promises.push(this.readerPromise(item));
+    });
+
+    try {
+      let results = await Promise.all(promises);
+      if (results && results.length > 0)
+      {
+        let plainText = results.join(' ');
+        plainText.toLowerCase().split(' ').
+        forEach((word, index) => {
+          word = word.replace(/[^\\w\\s]/gi, '').replace(/\\r?\\n|\\r/);
+          let validWord = _consolidated2.default.find((item, index) => item == word);
+          if (!validWord)
+          {
+            let firstLetter = word[0];
+            if (!dictionary[firstLetter])
+            dictionary[firstLetter] = {};
+            if (!dictionary[firstLetter][word])
+            dictionary[firstLetter][word] = 1;else
+
+            dictionary[firstLetter][word] += 1;
+          }
+
+        });
+        console.log("dictionary", dictionary);
+        this.setState({ dictionary, plainText, collapsedBookkeeping: Object.keys(dictionary).map((item, index) => true) });
+      }
+
+    }
+
+    catch (error) {
+      console.log("error", error);
+      alert("Error: " + error);
+    }
+  }
+
+  readerPromise(file)
+  {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        if (file.type.match('text/plain'))
+        resolve(reader.result);else
+
+        reject(file.name + " is not a valid format");
+      };
+      reader.onerror = () => {
+        reject("Opps something happened!");
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  handleClick(i) {var _state$collapsedBookk = _toArray(
+    this.state.collapsedBookkeeping);let collapsedBookkeeping = _state$collapsedBookk.slice(0);
+    collapsedBookkeeping[i] = !collapsedBookkeeping[i];
+    let index = collapsedBookkeeping.findIndex((item, index) => item == false ? true : false);
+    this.setState({ collapsedBookkeeping: collapsedBookkeeping, toCollapse: index >= 0 ? true : false });
+  }
+
+  collapseAll() {let
+    toCollapse = this.state.toCollapse;
+    this.setState({
+      collapsedBookkeeping: this.state.collapsedBookkeeping.map(() => toCollapse),
+      toCollapse: !toCollapse });
+
+  }
+
+  render() {var _state =
+    this.state;let dictionary = _state.dictionary,plainText = _state.plainText,toCollapse = _state.toCollapse,collapsedBookkeeping = _state.collapsedBookkeeping;
+    return (
+      _react2.default.createElement('div', { className: 'App', __source: { fileName: _jsxFileName, lineNumber: 98 }, __self: this },
+        _react2.default.createElement('header', { className: 'App-header', __source: { fileName: _jsxFileName, lineNumber: 99 }, __self: this },
+          _react2.default.createElement('img', { src: _logo2.default, className: 'App-logo', alt: 'logo', __source: { fileName: _jsxFileName, lineNumber: 100 }, __self: this }),
+          _react2.default.createElement('h1', { className: 'App-title', __source: { fileName: _jsxFileName, lineNumber: 101 }, __self: this }, 'Verification and Validation')),
+
+        _react2.default.createElement('div', { className: 'App-intro', __source: { fileName: _jsxFileName, lineNumber: 103 }, __self: this },
+          _react2.default.createElement('div', { className: 'card', __source: { fileName: _jsxFileName, lineNumber: 104 }, __self: this },
+            _react2.default.createElement('div', { className: 'card-header', __source: { fileName: _jsxFileName, lineNumber: 105 }, __self: this },
+              _react2.default.createElement('b', { __source: { fileName: _jsxFileName, lineNumber: 106 }, __self: this }, 'Text Processing:')),
+
+            dictionary && plainText &&
+            _react2.default.createElement('div', { className: 'card-body', __source: { fileName: _jsxFileName, lineNumber: 109 }, __self: this },
+              _react2.default.createElement('div', { className: 'container', __source: { fileName: _jsxFileName, lineNumber: 110 }, __self: this },
+                _react2.default.createElement('div', { className: 'row', __source: { fileName: _jsxFileName, lineNumber: 111 }, __self: this },
+                  _react2.default.createElement('div', { className: 'col-sm', __source: { fileName: _jsxFileName, lineNumber: 112 }, __self: this },
+                    plainText),
+
+                  _react2.default.createElement('div', { className: 'col-sm tree-view-custom', __source: { fileName: _jsxFileName, lineNumber: 115 }, __self: this },
+                    _react2.default.createElement('button', { type: 'button', onClick: this.collapseAll, className: 'btn btn-primary', __source: { fileName: _jsxFileName, lineNumber: 116 }, __self: this }, toCollapse ? "Collapse all" : "Expand all"),
+                    Object.keys(dictionary).sort().map((node, i) => {
+                      // Let's make it so that the tree also toggles when we click the
+                      // label. Controlled components make this effortless.
+                      const label =
+                      _react2.default.createElement('span', { className: 'node', onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 121 }, __self: this }, 'Letter: ',
+                        node);
+
+                      return (
+                        _react2.default.createElement(_reactTreeview2.default, {
+                            key: i,
+                            nodeLabel: label,
+                            collapsed: collapsedBookkeeping[i],
+                            onClick: this.handleClick.bind(null, i), __source: { fileName: _jsxFileName, lineNumber: 125 }, __self: this },
+                          Object.keys(dictionary[node]).map(entry => _react2.default.createElement('div', { className: 'info', key: entry, __source: { fileName: _jsxFileName, lineNumber: 130 }, __self: this }, entry + ": " + dictionary[node][entry]))));
+
+
+                    }))))),
+
+
+
+
+
+            _react2.default.createElement('div', { className: 'card-footer text-muted', __source: { fileName: _jsxFileName, lineNumber: 139 }, __self: this },
+              _react2.default.createElement(_reactDropzone2.default, { className: 'dropfiles', onDrop: this.onDrop.bind(this), __source: { fileName: _jsxFileName, lineNumber: 140 }, __self: this },
+                _react2.default.createElement('p', { __source: { fileName: _jsxFileName, lineNumber: 141 }, __self: this }, 'Try dropping some files here, or click to select files to upload.')))))));
+
+
+
+
+
+
+  }} renders and matches our snapshot 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    <img
+      alt="logo"
+      className="App-logo"
+      src="logo.svg"
+    />
+    <h1
+      className="App-title"
+    >
+      Verification and Validation
+    </h1>
+  </header>
+  <div
+    className="App-intro"
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-header"
+      >
+        <b>
+          Text Processing:
+        </b>
+      </div>
+      <div
+        className="card-footer text-muted"
+      >
+        <div
+          aria-disabled={false}
+          className="dropfiles"
+          onClick={[Function]}
+          onDragEnter={[Function]}
+          onDragLeave={[Function]}
+          onDragOver={[Function]}
+          onDragStart={[Function]}
+          onDrop={[Function]}
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <p>
+            Try dropping some files here, or click to select files to upload.
+          </p>
+          <input
+            accept={undefined}
+            autoComplete="off"
+            disabled={false}
+            multiple={true}
+            onChange={[Function]}
+            style={
+              Object {
+                "bottom": 0,
+                "left": 0,
+                "opacity": 0.00001,
+                "pointerEvents": "none",
+                "position": "absolute",
+                "right": 0,
+                "top": 0,
+              }
+            }
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

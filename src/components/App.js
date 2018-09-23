@@ -10,7 +10,6 @@ class App extends Component {
   {
       super(state);
       this.state = {files:null,dictionary:null,plainText:null,toCollapse:false}
-      console.log("consolidated",consolidated);
       this.handleClick = this.handleClick.bind(this)
       this.collapseAll = this.collapseAll.bind(this)
   }
@@ -19,11 +18,12 @@ class App extends Component {
   }
   async createDictionary(files)
   {
-    
+    //console.log("files",files);
     var dictionary = {};
     let promises=[];
-    if(files)
+    if(Array.isArray(files) && files.length>0)
     files.forEach((item,index)=>{
+      //console.log("about to call");
         promises.push(this.readerPromise(item))
       })
 
@@ -35,20 +35,22 @@ class App extends Component {
         plainText.toLowerCase().split(' ')
         .forEach((word,index)=>{
           word= word.replace(/[^\w\s]/gi, '').replace(/\r?\n|\r/)
-          let validWord = consolidated.find((item,index)=>item==word);
-          if(!validWord )
+          if(word)
           {
-            let firstLetter = word[0];
-            if(!dictionary[firstLetter])
-              dictionary[firstLetter]={};
-            if(!dictionary[firstLetter][word])
-            dictionary[firstLetter][word]=1;
-            else
-            dictionary[firstLetter][word]+=1;
+            let validWord = consolidated.find((item,index)=>item==word);
+            if(!validWord )
+            {
+              let firstLetter = word[0];
+              if(!dictionary[firstLetter])
+                dictionary[firstLetter]={};
+              if(!dictionary[firstLetter][word])
+              dictionary[firstLetter][word]=1;
+              else
+              dictionary[firstLetter][word]+=1;
+            }
           }
-          
         })
-        console.log("dictionary",dictionary);
+       console.log("dictionary",dictionary);
         this.setState({dictionary,plainText,collapsedBookkeeping:Object.keys(dictionary).map((item,index)=>true)})
       }
       
@@ -65,6 +67,7 @@ class App extends Component {
     return new Promise((resolve,reject)=>{
       var reader = new FileReader();
       reader.onload = ()=> {
+        console.log("reader.result",reader.result);
         if(file.type.match('text/plain'))
           resolve(reader.result);
         else
@@ -101,19 +104,19 @@ class App extends Component {
           <h1 className="App-title">Verification and Validation</h1>
         </header>
         <div className="App-intro">
-          <div class="card">
-            <div class="card-header">
+          <div className="card">
+            <div className="card-header">
               <b>Text Processing:</b>
             </div>
             {dictionary && plainText &&
-            <div class="card-body">
-              <div class="container">
-                <div class="row">
-                  <div class="col-sm">
+            <div className="card-body">
+              <div className="container">
+                <div className="row">
+                  <div className="col-sm">
                     {plainText}
                   </div>
-                  <div class="col-sm tree-view-custom">
-                  <button type="button" onClick={this.collapseAll} class="btn btn-primary">{toCollapse?"Collapse all":"Expand all"}</button>
+                  <div className="col-sm tree-view-custom">
+                  <button type="button" onClick={this.collapseAll} className="btn btn-primary">{toCollapse?"Collapse all":"Expand all"}</button>
                     {Object.keys(dictionary).sort().map((node, i) => {
                       // Let's make it so that the tree also toggles when we click the
                       // label. Controlled components make this effortless.
@@ -136,7 +139,7 @@ class App extends Component {
               </div>
             </div>
             }
-            <div class="card-footer text-muted">
+            <div className="card-footer text-muted">
               <Dropzone className="dropfiles" onDrop={this.onDrop.bind(this)}>
               <p>Try dropping some files here, or click to select files to upload.</p>
             </Dropzone>
