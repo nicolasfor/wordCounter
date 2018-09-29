@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import Dictionary from './Dictionary';
 import { shallow, mount } from 'enzyme';
 import renderer from 'react-test-renderer';
 import Dropzone from 'react-dropzone'
@@ -73,23 +74,36 @@ describe(App, () => {
 	    const componentWrapper = shallow(<App />);
 	    const component = componentWrapper.instance();
 		await component.createDictionary(files)
-		expect(componentWrapper.state().plainText).toEqual(plainText);
+		let dictionaries = componentWrapper.state().dictionaries
+		expect(dictionaries.length).toEqual(1)
+		expect(dictionaries[0].plainText).toEqual(plainText)
 	});
 
-	it('dictionary should populate correctly deleting black list words', async () => {
+	it('Dictionary should populate correctly deleting black list words', async () => {
 	    const componentWrapper = shallow(<App />);
 	    const component = componentWrapper.instance();
 		await component.createDictionary(files)
 		let obj ={"c": {"construct": 1}, "f": {"file": 1}}
-		expect(componentWrapper.state().dictionary).toEqual(obj);
+		let dictionaries = componentWrapper.state().dictionaries
+		expect(dictionaries[0].dictionary).toEqual(obj);
+	});
+
+	it('It should create dictionary size of childs', async () => {
+	    const componentWrapper = shallow(<App />);
+	    const component = componentWrapper.instance();
+		await component.createDictionary(files)
+		expect(componentWrapper.find(Dictionary)).toHaveLength(1);
 	});
 
 	it('Collapsable state should be false unless one item is clicked', async () => {
 	    const componentWrapper = shallow(<App />);
 	    const component = componentWrapper.instance();
 		await component.createDictionary(files)
-		expect(componentWrapper.state().toCollapse).toEqual(false);
-		component.handleClick(0);
-		expect(componentWrapper.state().toCollapse).toEqual(true);
+		let dictionaries = componentWrapper.state().dictionaries
+		const childWrapper = shallow(<Dictionary dictionary={dictionaries[0]}/>);
+		childWrapper.instance().handleClick(0);
+		expect(childWrapper.state().toCollapse).toEqual(true);
+
+
 	});
 });
