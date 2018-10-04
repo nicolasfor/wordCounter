@@ -7,7 +7,7 @@ import renderer from 'react-test-renderer';
 import Dropzone from 'react-dropzone'
 
 describe(App, () => {
-	const plainText='@you i&%&% an $%construct a f%ile...'
+	const plainText='@you i&%&% an $%construct a f%ile... construct'
 	const parts = [
 	  new Blob([plainText], {type: 'text/plain'})
 	];
@@ -83,7 +83,7 @@ describe(App, () => {
 	    const componentWrapper = shallow(<App />);
 	    const component = componentWrapper.instance();
 		await component.createDictionary(files)
-		let obj ={"c": {"construct": 1}, "f": {"file": 1}}
+		let obj ={"c": {"construct": 2}, "f": {"file": 1}}
 		let dictionaries = componentWrapper.state().dictionaries
 		expect(dictionaries[0].dictionary).toEqual(obj);
 	});
